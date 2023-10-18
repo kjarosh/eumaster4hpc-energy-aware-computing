@@ -1,0 +1,7 @@
+services:
+  eumaster4hpc:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8888:8888"
