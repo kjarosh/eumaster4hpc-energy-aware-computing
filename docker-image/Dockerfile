@@ -4,7 +4,7 @@ RUN dnf install -y python3-notebook \
   	&& dnf clean all \
   	&& rm -rf /var/cache/yum
 
-RUN mkdir /jupyter
+COPY jupyter /jupyter
 WORKDIR /jupyter
 
 ENTRYPOINT [ \

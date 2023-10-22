@@ -5,3 +5,14 @@ services:
       dockerfile: Dockerfile
     ports:
       - "8888:8888"
+
+  eumaster4hpc-dev:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8888:8888"
+    volumes:
+      - "./jupyter:/jupyter"
+    profiles:
+      - dev
