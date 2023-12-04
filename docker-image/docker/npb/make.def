@@ -1,0 +1,16 @@
+FC = gfortran
+FLINK	= $(FC)
+F_LIB  =
+F_INC =
+FFLAGS	= -O3 -fopenmp
+FLINKFLAGS = $(FFLAGS)
+CC = gcc
+CLINK	= $(CC)
+C_LIB  = -lm
+C_INC =
+CFLAGS	= -O3 -fopenmp
+CLINKFLAGS = $(CFLAGS)
+UCC	= gcc
+BINDIR	= ../bin
+RAND   = randi8
+WTIME  = wtime.c
