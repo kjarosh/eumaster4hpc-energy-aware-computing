@@ -1,0 +1,55 @@
+#!/usr/bin/env python3
+
+import subprocess
+import sys
+import time
+
+NS_IN_S = 1_000_000_000
+
+
+def log(message):
+    print(message, file=sys.stderr)
+
+
+def power_draw_w():
+    proc = subprocess.run(
+        ["nvidia-smi", "--query-gpu=power.draw", "--format=csv"],
+        capture_output=True)
+    stdout = proc.stdout.decode('utf-8')
+    return float(stdout.split('\n')[1].split(' ')[0])
+
+
+def measure_power(args, resolution=0.1):
+    energy_j = 0
+    proc = subprocess.Popen(args)
+    start_time_ns = time.time_ns()
+    time_ns = start_time_ns
+
+    while True:
+        timeout = False
+        try:
+            proc.wait(timeout=resolution)
+        except subprocess.TimeoutExpired:
+            timeout = True
+        new_time_ns = time.time_ns()
+        draw_w = power_draw_w()
+        log(f'Draw at {(new_time_ns - start_time_ns) / NS_IN_S} s: {draw_w} W')
+
+        delay_ns = new_time_ns - time_ns
+        energy_j += delay_ns * draw_w / NS_IN_S
+        time_ns = new_time_ns
+
+        if not timeout:
+            break
+
+    total_time_s = (time_ns - start_time_ns) / NS_IN_S
+    log(f'Total energy consumed: {energy_j} J')
+    log(f'Average draw: {energy_j / total_time_s} W')
+
+
+def main(argv):
+    measure_power(argv)
+
+
+if __name__ == '__main__':
+    sys.exit(main(sys.argv[1:]))

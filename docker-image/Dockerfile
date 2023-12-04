@@ -18,11 +18,14 @@ RUN \
     # install NVIDIA
     dnf install -y https://download1.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm && \
     dnf install -y akmod-nvidia xorg-x11-drv-nvidia-cuda && \
+    # install other tools
+    dnf install -y perf && \
     # clean up
     dnf clean all && \
     rm -rf /var/cache/yum
 
-COPY --from=npb-builder /NPB3.4.2/NPB3.4-OMP/bin/* /usr/bin/
+COPY --from=npb-builder /NPB3.4.2/NPB3.4-OMP/bin/* /usr/local/bin/
+COPY docker/scripts/* /usr/local/bin/
 
 COPY jupyter /jupyter
 WORKDIR /jupyter
