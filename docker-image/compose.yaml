@@ -5,6 +5,8 @@ services:
       dockerfile: Dockerfile
     ports:
       - "8888:8888"
+    profiles:
+      - prod
     privileged: true
 
   eumaster4hpc-dev:
