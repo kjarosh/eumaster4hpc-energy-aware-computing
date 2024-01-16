@@ -8,6 +8,7 @@ services:
     profiles:
       - prod
     privileged: true
+    runtime: nvidia
 
   eumaster4hpc-dev:
     build:
@@ -20,3 +21,4 @@ services:
     profiles:
       - dev
     privileged: true
+    runtime: nvidia
