@@ -44,8 +44,10 @@ COPY docker/scripts/* /usr/local/bin/
 COPY jupyter /jupyter
 WORKDIR /jupyter
 
+ENTRYPOINT []
+
 CMD [ \
-    "/usr/bin/jupyter-notebook", \
+    "/usr/local/bin/jupyter-notebook", \
     "--allow-root", \
     "--port", "8888", \
     "--ip", "0.0.0.0"]
