@@ -27,15 +27,12 @@ FROM nvidia/cuda:12.3.1-devel-rockylinux9
 
 RUN \
     dnf install -y https://mirrors.rpmfusion.org/free/el/rpmfusion-free-release-9.noarch.rpm && \
-    # install Jupyter
-    dnf install -y python3-pip && pip3 install jupyter && \
-    # install other tools
-    dnf install -y perf gnuplot && \
-    # install runtime dependencies
-    dnf install -y libgfortran boost && \
-    # clean up
+    dnf install -y python3-pip perf gnuplot libgfortran boost && \
     dnf clean all && \
-    rm -rf /var/cache/yum
+    rm -rf /var/cache/yum && \
+    # install Python dependencies
+    pip3 install jupyter torch torchvision && \
+    mkdir -p /usr/local/nvidia && ln -s /usr/local/lib/python3.9/site-packages/nvidia/cudnn/lib /usr/local/nvidia/lib
 
 COPY --from=npb-builder /NPB3.4.2/NPB3.4-OMP/bin/* /usr/local/bin/
 COPY --from=split-builder /repo/build/DEPO /repo/build/StEP /repo/build/SetPowerLimits /repo/build/GetAppPower /usr/local/bin/
