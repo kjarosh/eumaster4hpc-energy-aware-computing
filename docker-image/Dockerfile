@@ -31,7 +31,7 @@ RUN \
     dnf clean all && \
     rm -rf /var/cache/yum && \
     # install Python dependencies
-    pip3 install jupyter torch torchvision && \
+    pip3 --no-cache-dir install jupyter torch torchvision && \
     mkdir -p /usr/local/nvidia && ln -s /usr/local/lib/python3.9/site-packages/nvidia/cudnn/lib /usr/local/nvidia/lib
 
 COPY --from=npb-builder /NPB3.4.2/NPB3.4-OMP/bin/* /usr/local/bin/
