@@ -37,6 +37,7 @@ RUN \
 COPY --from=npb-builder /NPB3.4.2/NPB3.4-OMP/bin/* /usr/local/bin/
 COPY --from=split-builder /repo/build/DEPO /repo/build/StEP /repo/build/SetPowerLimits /repo/build/GetAppPower /usr/local/bin/
 COPY docker/scripts/* /usr/local/bin/
+COPY docker/images/* /images/
 
 COPY jupyter /jupyter
 WORKDIR /jupyter
