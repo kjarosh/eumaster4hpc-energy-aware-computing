@@ -17,10 +17,23 @@ RUN dnf -y install \
    gcc gcc-c++ wget cmake make git boost-devel
 
 RUN git clone https://projects.task.gda.pl/akrz/split.git /repo
-
 WORKDIR /repo
 
 RUN mkdir -p build && cd build && cmake .. && make -j 10
+
+################################################################################
+FROM nvidia/cuda:12.3.1-devel-rockylinux9 as gemm-builder
+
+RUN dnf -y install git make
+
+RUN git clone https://github.com/hma02/cublasgemm-benchmark.git /repo
+WORKDIR /repo
+
+COPY docker/gemm/patch.diff /tmp/patch.diff
+RUN git apply /tmp/patch.diff
+
+ENV CUDA_ARCH_FLAGS=""
+RUN make
 
 ################################################################################
 FROM nvidia/cuda:12.3.1-devel-rockylinux9
@@ -36,6 +49,7 @@ RUN \
 
 COPY --from=npb-builder /NPB3.4.2/NPB3.4-OMP/bin/* /usr/local/bin/
 COPY --from=split-builder /repo/build/DEPO /repo/build/StEP /repo/build/SetPowerLimits /repo/build/GetAppPower /usr/local/bin/
+COPY --from=gemm-builder /repo/gemm /usr/local/bin/
 COPY docker/scripts/* /usr/local/bin/
 COPY docker/images/* /images/
 
