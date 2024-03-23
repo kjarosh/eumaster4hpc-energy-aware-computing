@@ -1,0 +1,27 @@
+name: Docker
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  docker:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push'
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build
+        working-directory: docker-image
+        run: |
+          docker build . --no-cache -t eumaster4hpccyfronet/energy-aware-computing-mooc
+
+      - name: Log in to DockerHub
+        uses: docker/login-action@v2
+        with:
+          username: eumaster4hpccyfronet
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Push image
+        run: |
+          docker push eumaster4hpccyfronet/energy-aware-computing-mooc
