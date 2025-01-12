@@ -1,4 +1,4 @@
-FROM rockylinux:9 as npb-builder
+FROM rockylinux:9 AS npb-builder
 
 RUN dnf install -y wget make gcc gcc-gfortran && \
     wget https://www.nas.nasa.gov/assets/npb/NPB3.4.2.tar.gz && \
@@ -11,26 +11,26 @@ COPY docker/npb/*.def config/
 RUN make suite
 
 ################################################################################
-FROM nvidia/cuda:12.3.1-devel-rockylinux9 as split-builder
+FROM nvidia/cuda:12.3.1-devel-rockylinux9 AS split-builder
 
 RUN dnf -y install \
    gcc gcc-c++ wget cmake make git boost-devel
 
-RUN git clone https://projects.task.gda.pl/akrz/split.git /repo
+COPY submodules/split /repo
 WORKDIR /repo
 
 RUN mkdir -p build && cd build && cmake .. && make -j 10
 
 ################################################################################
-FROM nvidia/cuda:12.3.1-devel-rockylinux9 as gemm-builder
+FROM nvidia/cuda:12.3.1-devel-rockylinux9 AS gemm-builder
 
-RUN dnf -y install git make
+RUN dnf -y install make patch
 
-RUN git clone https://github.com/hma02/cublasgemm-benchmark.git /repo
+COPY submodules/cublasgemm-benchmark /repo
 WORKDIR /repo
 
 COPY docker/gemm/patch.diff /tmp/patch.diff
-RUN git apply /tmp/patch.diff
+RUN patch < /tmp/patch.diff
 
 ENV CUDA_ARCH_FLAGS=""
 RUN make
