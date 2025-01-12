@@ -1,0 +1,6 @@
+[submodule "docker-image/submodules/split"]
+	path = docker-image/submodules/split
+	url = https://projects.task.gda.pl/akrz/split.git
+[submodule "docker-image/submodules/cublasgemm-benchmark"]
+	path = docker-image/submodules/cublasgemm-benchmark
+	url = https://github.com/hma02/cublasgemm-benchmark.git
